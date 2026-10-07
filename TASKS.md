@@ -8,10 +8,10 @@
 ```text
 Branch            phase-1
 Iteration         Phase 1 — Socle
-Active slice      P1.2
+Active slice      P1.3
 Workflow state    PLANNING
-Last validated    P1.1 — 2026-10-07 (commit 43fd22c)
-Next action       Planner: plan P1.2 (shared domain: R2 classes, R3 budget month, theoretical balance)
+Last validated    P1.2 — 2026-10-07 (commit 73cbb86)
+Next action       Planner: read docs/spec.md §Modèle de données, raise yes/no questions, plan P1.3
 ```
 
 ## Phase 1 slices
@@ -19,8 +19,8 @@ Next action       Planner: plan P1.2 (shared domain: R2 classes, R3 budget month
 | Slice | Scope                                                                                                                                                                                                                                          | Depends on | State                                        |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------- |
 | P1.1  | Repo scaffold: npm workspaces (shared/server/client), TS config, scripts from PROJECT §Commands, `.gitignore`, `.gitattributes`, `.vscode/settings.json`, `docs/decisions.md`, `CHANGELOG.md`                                                  | —          | CLOSED — Fred validated 2026-10-07 (43fd22c) |
-| P1.2  | Shared domain (pure, tested): operation classes and allowed combinations (R2), budget-month rule (R3), theoretical balance per account, amount/date validation                                                                                 | P1.1       | PLANNING                                     |
-| P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | —                                            |
+| P1.2  | Shared domain (pure, tested): operation classes and allowed combinations (R2), budget-month rule (R3), theoretical balance per account, amount/date validation                                                                                 | P1.1       | CLOSED — Fred validated 2026-10-07 (73cbb86) |
+| P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | PLANNING                                     |
 | P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | —                                            |
 | P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | —                                            |
 | P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | —                                            |
@@ -53,6 +53,9 @@ Known non-blocking notes:
 - Server listens on 127.0.0.1 by default: P1.10 container must set `HOST=0.0.0.0` deliberately.
 - Shared tests rely on `@types/node` hoisted from server; add it to shared if hoisting becomes fragile.
 - DB column naming (English vs spec's French names) to decide in P1.3 and record in `docs/decisions.md`.
+- P1.3 must fix the id type (number vs string) — `same_account` compares with `===`.
+- P1.5 must validate operations before writing; `computeTheoreticalBalance` trusts its input.
+- P1.3 seed must set `rollsOver` on categories: true for Salaire, Épargne and "Chargement du pot"; false for renforts and other transfers (tests required).
 - The Excel import file stays in `local-data/` (gitignored); QA import runs only on Fred's machine.
 
 ## Environment constraints
@@ -64,13 +67,13 @@ Known non-blocking notes:
 
 ```text
 Branch            phase-1
-Slice             P1.2
+Slice             P1.3
 Workflow state    PLANNING
 Approved goal     Phase 1 — Socle (docs/spec.md §Phases)
-✅ Done           P1.1 scaffold (43fd22c): workspaces, GET /health, blank client, scripts typecheck/build/test/dev:*
-⏳ Pending        P1.2 plan
-Validation done   P1.1: typecheck/build green; npm test 2/2; Fred: /health 200, page displays "Suivi financier"
+✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86): R2 classes + field matrix, R3 budget month (rollsOver, day 1–28), theoretical balance, amount/date validators
+⏳ Pending        P1.3 plan
+Validation done   P1.2: typecheck/build green; npm test 37/37 (agent-run); review passed; Fred validated Gate 2
 Not validated     —
 Risks/blockers    none
-Next action       Planner plans P1.2; Fred approves
+Next action       Planner plans P1.3; Fred approves
 ```
