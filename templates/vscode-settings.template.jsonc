@@ -1,0 +1,26 @@
+// Copy to .vscode/settings.json and mirror PROJECT.md §Commands tiers.
+// Check the setting key against your VS Code version (or your existing project's settings.json):
+// true  = auto tier (runs without asking)
+// false = ask tier (VS Code asks every time)
+// "never" commands are simply not listed here; AGENTS.md §4 forbids them.
+{
+  "chat.tools.terminal.autoApprove": {
+    // auto — read-only Git
+    "git status": true,
+    "git diff": true,
+    "git log": true,
+    "git show": true,
+    "git branch --show-current": true,
+
+    // auto — validation (replace with PROJECT.md §Commands)
+    "npm run typecheck": true,
+    "npm run build": true,
+    "npm test": true,
+
+    // ask — everything that changes state
+    "npm install": false,
+    "npm ci": false,
+    "git add": false,
+    "git commit": false
+  }
+}
