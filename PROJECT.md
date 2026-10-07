@@ -18,7 +18,7 @@ Hosting     self-hosted on the developer's homelab, reachable only through Tails
 ## Stack
 
 ```text
-Runtime           Node >= 22 (tests use `node --test` glob patterns)
+Runtime           Node >= 22.12.0 (Vite 7; tests use quoted `node --test` glob patterns)
 Package manager   npm workspaces — never yarn/pnpm/bun
 Backend           Express 5 + TypeScript (ESM)
 Frontend          React 18 + Vite 7 + TanStack Query, installable PWA
@@ -85,16 +85,16 @@ Compliance        never install or open the app from an employer-managed (domain
 
 ## Commands
 
-Scripts below are created by slice P1.1. Until P1.1 is committed, every command is **not configured** (AGENTS §4: never invent scripts).
+P1.1 creates only `typecheck`, `build`, `test`, `dev:api`, `dev:client`. Every other command below is **not configured** until its slice adds it (AGENTS §4: never invent scripts, no stubs): `db:*`, `test:integration`, `seed:*` → P1.3; `import:*` → P1.9; `backup:*` → P1.10.
 
 Validation set (root):
 
 ```text
 typecheck           npm run typecheck
-build               npm run build
-unit tests          npm test                   (shared + server, no DB file)
-integration tests   npm run test:integration   (server, temp SQLite file)
-schema check        npm run db:check
+build               npm run build              (cleans each package's dist/ first)
+unit tests          npm test                   (builds shared + server, runs compiled tests; no DB file)
+integration tests   npm run test:integration   (P1.3 — not configured yet)
+schema check        npm run db:check           (P1.3 — not configured yet)
 lint                not configured
 client tests        none — client acceptance = typecheck + build + developer browser check
 ```
