@@ -30,7 +30,8 @@ Deployment        Docker Compose on the homelab; HTTPS via `tailscale serve`
 ## Layout
 
 ```text
-packages/shared   contracts, zod schemas, types, stable error codes, PURE domain rules
+packages/shared   contracts, types, stable error codes, plain TS validators (zod deferred to API slices),
+                  PURE domain rules
                   (operation classes, budget-month rule, balance computation) — no I/O
 packages/server   HTTP API, domain services, Drizzle schema/migrations, import, backup scripts
 packages/client   React PWA — mobile quick entry + desktop review screens (French UI)
