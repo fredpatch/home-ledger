@@ -8,10 +8,10 @@
 ```text
 Branch            phase-1
 Iteration         Phase 1 — Socle
-Active slice      P1.3
+Active slice      P1.4
 Workflow state    PLANNING
-Last validated    P1.2 — 2026-10-07 (commit 73cbb86)
-Next action       Planner: read docs/spec.md §Modèle de données, raise yes/no questions, plan P1.3
+Last validated    P1.3 — 2026-10-08 (commit d68ebc4)
+Next action       Planner: read docs/spec.md auth rules, raise yes/no questions, plan P1.4
 ```
 
 ## Phase 1 slices
@@ -20,8 +20,8 @@ Next action       Planner: read docs/spec.md §Modèle de données, raise yes/no
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------- |
 | P1.1  | Repo scaffold: npm workspaces (shared/server/client), TS config, scripts from PROJECT §Commands, `.gitignore`, `.gitattributes`, `.vscode/settings.json`, `docs/decisions.md`, `CHANGELOG.md`                                                  | —          | CLOSED — Fred validated 2026-10-07 (43fd22c) |
 | P1.2  | Shared domain (pure, tested): operation classes and allowed combinations (R2), budget-month rule (R3), theoretical balance per account, amount/date validation                                                                                 | P1.1       | CLOSED — Fred validated 2026-10-07 (73cbb86) |
-| P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | PLANNING                                     |
-| P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | —                                            |
+| P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | CLOSED — Fred validated 2026-10-08 (d68ebc4) |
+| P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | PLANNING                                     |
 | P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | —                                            |
 | P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | —                                            |
 | P1.7  | Desktop journal (filters, inline edit) + current-month budget view by envelope                                                                                                                                                                 | P1.5, P1.6 | —                                            |
@@ -56,6 +56,10 @@ Known non-blocking notes:
 - P1.3 must fix the id type (number vs string) — `same_account` compares with `===`.
 - P1.5 must validate operations before writing; `computeTheoreticalBalance` trusts its input.
 - P1.3 seed must set `rollsOver` on categories: true for Salaire, Épargne and "Chargement du pot"; false for renforts and other transfers (tests required).
+- P1.5: validate settings values (budget_rollover_day 1–28, cash_tolerance ≥ 0) at the API; settings table has no value CHECK.
+- P1.10: ship src/db/migrations in the Docker image (SQL not copied to dist/).
+- P1.10: review npm audit (4 moderate) before deployment; prod image installs runtime deps only.
+- Open data question: October pot-sourced budgets 435 500 vs pot ≈ 400 000.
 - The Excel import file stays in `local-data/` (gitignored); QA import runs only on Fred's machine.
 
 ## Environment constraints
@@ -67,13 +71,13 @@ Known non-blocking notes:
 
 ```text
 Branch            phase-1
-Slice             P1.3
+Slice             P1.4
 Workflow state    PLANNING
 Approved goal     Phase 1 — Socle (docs/spec.md §Phases)
-✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86): R2 classes + field matrix, R3 budget month (rollsOver, day 1–28), theoretical balance, amount/date validators
-⏳ Pending        P1.3 plan
-Validation done   P1.2: typecheck/build green; npm test 37/37 (agent-run); review passed; Fred validated Gate 2
+✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4)
+⏳ Pending        P1.4 plan
+Validation done   P1.3: typecheck/build/db:check green; npm test 43/43; test:integration 23/23 (agent-run); review and QA passed; Fred validated Gate 2
 Not validated     —
 Risks/blockers    none
-Next action       Planner plans P1.3; Fred approves
+Next action       Planner plans P1.4; Fred approves
 ```
