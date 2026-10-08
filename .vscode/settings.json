@@ -9,7 +9,12 @@
     "npm run typecheck": true,
     "npm run build": true,
     "npm test": true,
+    "npm run db:check": true,
 
+    "npm run db:generate": false,
+    "npm run db:migrate": false,
+    "npm run seed:reference": false,
+    "npm run test:integration": false,
     "npm run dev:api": false,
     "npm run dev:client": false,
     "npm install": false,

@@ -64,7 +64,7 @@ Local target      file path from env DATABASE_PATH (default packages/server/data
 Production        Docker volume on the homelab — agents never touch it
 ORM / migrations  Drizzle ORM + drizzle-kit; migrations in packages/server/src/db/migrations
 Generated files   packages/server/src/db/migrations/** (SQL + meta), packages/*/dist/**
-Seeds             npm run seed:reference (accounts, categories, envelopes, parameters) — ask tier
+Seeds             npm run seed:reference (accounts, envelopes, categories, Oct 2026 budgets, settings; insert-only, idempotent) — ask tier
 Import source     Excel v9.3 file in local-data/ (gitignored) — never committed
 Backups           nightly online backup (`VACUUM INTO` / backup API), encrypted, 2nd disk + off-site;
                   restore tested monthly
@@ -86,16 +86,16 @@ Compliance        never install or open the app from an employer-managed (domain
 
 ## Commands
 
-P1.1 creates only `typecheck`, `build`, `test`, `dev:api`, `dev:client`. Every other command below is **not configured** until its slice adds it (AGENTS §4: never invent scripts, no stubs): `db:*`, `test:integration`, `seed:*` → P1.3; `import:*` → P1.9; `backup:*` → P1.10.
+Configured: `typecheck`, `build`, `test`, `dev:api`, `dev:client` (P1.1); `db:generate`, `db:migrate`, `db:check`, `seed:reference`, `test:integration` (P1.3). Every other command below is **not configured** until its slice adds it (AGENTS §4: never invent scripts, no stubs): `import:*` → P1.9; `backup:*` → P1.10.
 
 Validation set (root):
 
 ```text
 typecheck           npm run typecheck
 build               npm run build              (cleans each package's dist/ first)
-unit tests          npm test                   (builds shared + server, runs compiled tests; no DB file)
-integration tests   npm run test:integration   (P1.3 — not configured yet)
-schema check        npm run db:check           (P1.3 — not configured yet)
+unit tests          npm test                   (builds shared + server, runs compiled unit tests; no DB file)
+integration tests   npm run test:integration   (real SQLite in an OS temp dir; ask tier)
+schema check        npm run db:check           (drizzle-kit check on migration files; no DB access)
 lint                not configured
 client tests        none — client acceptance = typecheck + build + developer browser check
 ```

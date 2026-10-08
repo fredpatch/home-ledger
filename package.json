@@ -9,13 +9,19 @@
     "packages/*"
   ],
   "scripts": {
-    "typecheck": "npm run typecheck --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run build -w @suivi/shared && npm run typecheck --workspaces --if-present",
+    "build": "npm run build -w @suivi/shared && npm run build -w @suivi/server && npm run build -w @suivi/client",
     "test": "npm run build -w @suivi/shared -w @suivi/server && node --test \"packages/shared/dist/test/*.test.js\" \"packages/server/dist/test/*.test.js\"",
+    "db:generate": "npm run db:generate -w @suivi/server",
+    "db:migrate": "npm run db:migrate -w @suivi/server",
+    "db:check": "npm run db:check -w @suivi/server",
+    "seed:reference": "npm run seed:reference -w @suivi/server",
+    "test:integration": "npm run build -w @suivi/shared -w @suivi/server && node --test \"packages/server/dist/test/integration/*.test.js\"",
     "dev:api": "npm run dev -w @suivi/server",
     "dev:client": "npm run dev -w @suivi/client"
   },
   "devDependencies": {
+    "drizzle-orm": "0.45.4",
     "typescript": "5.9.3"
   }
 }

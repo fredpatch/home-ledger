@@ -123,8 +123,8 @@ test("R2: unknown class and invalid amounts are reported", () => {
   ]);
 });
 
-test("R2: null and empty ids count as absent", () => {
-  assert.deepEqual(issues("expense", { sourceAccountId: 1, destAccountId: null, projectId: "" }), []);
+test("R2: null and undefined ids count as absent", () => {
+  assert.deepEqual(issues("expense", { sourceAccountId: 1, destAccountId: null, projectId: null }), []);
   assert.deepEqual(issues("expense", { sourceAccountId: null }), [
     { code: "field_required", field: "sourceAccountId" },
   ]);

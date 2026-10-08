@@ -2,7 +2,8 @@ import { isValidAmount } from "./money.js";
 import { isOperationClass } from "./operation-class.js";
 import type { OperationClass } from "./operation-class.js";
 
-export type Id = number | string;
+// Database ids are INTEGER primary keys.
+export type Id = number;
 
 export interface OperationShape {
   readonly operationClass: unknown;
@@ -54,7 +55,7 @@ const LINK_FIELDS: readonly OperationLinkField[] = [
 ];
 
 function isPresent(value: Id | null | undefined): boolean {
-  return value !== null && value !== undefined && value !== "";
+  return value !== null && value !== undefined;
 }
 
 /** Returns every consistency issue of an operation; an empty array means the combination is allowed. */
