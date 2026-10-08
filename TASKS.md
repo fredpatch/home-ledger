@@ -9,10 +9,10 @@
 Branch            phase-1
 Iteration         Phase 1 — Socle
 Active slice      P1.4
-Workflow state    AWAITING_QA
+Workflow state    COMMITTED (73a6e5e, not pushed)
 Approved plan     docs/decisions.md — 2026-10-08 P1.4 authentication entry
-Last validated    P1.3 — 2026-10-08 (commit d68ebc4)
-Next action       QA validates P1.4 against the approved plan; then Fred's Gate 2
+Last validated    P1.4 — 2026-10-08 (commit 73a6e5e)
+Next action       Fred: push phase-1, close P1.4; then Planner plans P1.5
 ```
 
 ## Phase 1 slices
@@ -22,7 +22,7 @@ Next action       QA validates P1.4 against the approved plan; then Fred's Gate 
 | P1.1  | Repo scaffold: npm workspaces (shared/server/client), TS config, scripts from PROJECT §Commands, `.gitignore`, `.gitattributes`, `.vscode/settings.json`, `docs/decisions.md`, `CHANGELOG.md`                                                  | —          | CLOSED — Fred validated 2026-10-07 (43fd22c) |
 | P1.2  | Shared domain (pure, tested): operation classes and allowed combinations (R2), budget-month rule (R3), theoretical balance per account, amount/date validation                                                                                 | P1.1       | CLOSED — Fred validated 2026-10-07 (73cbb86) |
 | P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | CLOSED — Fred validated 2026-10-08 (d68ebc4) |
-| P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | AWAITING_QA                                  |
+| P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | COMMITTED — Fred validated 2026-10-08 (73a6e5e) |
 | P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | —                                            |
 | P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | —                                            |
 | P1.7  | Desktop journal (filters, inline edit) + current-month budget view by envelope                                                                                                                                                                 | P1.5, P1.6 | —                                            |
@@ -73,12 +73,12 @@ Known non-blocking notes:
 ```text
 Branch            phase-1
 Slice             P1.4
-Workflow state    AWAITING_QA
+Workflow state    COMMITTED (73a6e5e, not pushed)
 Approved goal     Phase 1 — Socle (docs/spec.md §Phases); P1.4 plan = docs/decisions.md 2026-10-08 P1.4 entry
-✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4)
-⏳ Pending        P1.4 QA (review passed with notes; review fixes applied), then Gate 2
-Validation done   P1.3: typecheck/build/db:check green; npm test 43/43; test:integration 23/23 (agent-run); review and QA passed; Fred validated Gate 2
+✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4); P1.4 single-account auth (73a6e5e)
+⏳ Pending        push phase-1; P1.4 closure; P1.5 plan
+Validation done   P1.4: typecheck/build/db:check green; npm test 54/54; test:integration 38/38 (agent-run); review passed with notes (fixes applied); QA passed with limitations; Fred validated Gate 2
 Not validated     —
 Risks/blockers    none
-Next action       QA validates P1.4 (test:integration needs Fred's approval)
+Next action       Fred pushes phase-1 and closes P1.4; Planner plans P1.5
 ```
