@@ -2,6 +2,10 @@
 
 Newest first.
 
+## 2026-10-08 — Budget envelopes vs pot
+
+- **Pot-funded budgets exceeding the pot**: warn, never block; the tolerance comes from settings.
+
 ## 2026-10-08 — P1.4 authentication
 
 - **Login method**: password only in Phase 1; passkey (docs/spec.md §Architecture, hébergement, sécurité) is deferred.
