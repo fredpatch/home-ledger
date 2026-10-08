@@ -16,6 +16,7 @@
     "db:migrate": "npm run db:migrate -w @suivi/server",
     "db:check": "npm run db:check -w @suivi/server",
     "seed:reference": "npm run seed:reference -w @suivi/server",
+    "auth:set-password": "npm run auth:set-password -w @suivi/server",
     "test:integration": "npm run build -w @suivi/shared -w @suivi/server && node --test \"packages/server/dist/test/integration/*.test.js\"",
     "dev:api": "npm run dev -w @suivi/server",
     "dev:client": "npm run dev -w @suivi/client"

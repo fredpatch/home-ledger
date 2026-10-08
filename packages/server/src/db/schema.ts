@@ -9,6 +9,7 @@ import {
   OPERATION_USAGES,
   PROJECT_STATUSES,
   RECONCILIATION_FREQUENCIES,
+  SESSION_KINDS,
 } from "@suivi/shared";
 
 // Kept in one file with no relative imports: drizzle-kit loads it directly.
@@ -237,3 +238,37 @@ export const changeLog = sqliteTable("change_log", {
   afterJson: text("after_json"),
   changedAt: text("changed_at").notNull().default(nowUtc),
 });
+
+// PROJECT.md §Security: server-side sessions. Only the SHA-256 of the session id is stored.
+// Timestamps are ISO 8601 UTC strings written by the server clock.
+export const sessions = sqliteTable(
+  "sessions",
+  {
+    idHash: text("id_hash").primaryKey(),
+    csrfToken: text("csrf_token").notNull(),
+    kind: text("kind", { enum: SESSION_KINDS }).notNull(),
+    createdAt: text("created_at").notNull(),
+    lastSeenAt: text("last_seen_at").notNull(),
+    expiresAt: text("expires_at").notNull(),
+    absoluteExpiresAt: text("absolute_expires_at").notNull(),
+  },
+  () => [
+    check("sessions_kind_check", sql.raw(inList("kind", SESSION_KINDS))),
+    check("sessions_id_hash_check", sql.raw(`length("id_hash") = 64`)),
+  ],
+);
+
+// PROJECT.md §Security: login rate limit for the single account. One row (id = 1), kept across restarts.
+export const authThrottle = sqliteTable(
+  "auth_throttle",
+  {
+    id: integer("id").primaryKey(),
+    failedCount: integer("failed_count").notNull().default(0),
+    windowStartedAt: text("window_started_at"),
+    lockedUntil: text("locked_until"),
+  },
+  () => [
+    check("auth_throttle_single_row_check", sql.raw(`"id" = 1`)),
+    check("auth_throttle_failed_count_check", sql.raw(`${isInt("failed_count")} AND "failed_count" >= 0`)),
+  ],
+);

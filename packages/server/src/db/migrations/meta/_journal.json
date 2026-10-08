@@ -15,6 +15,13 @@
       "when": 1791478963279,
       "tag": "0001_triggers",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791480857060,
+      "tag": "0002_groovy_patch",
+      "breakpoints": true
     }
   ]
 }

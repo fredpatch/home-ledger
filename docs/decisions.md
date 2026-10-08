@@ -2,6 +2,20 @@
 
 Newest first.
 
+## 2026-10-08 — P1.4 authentication
+
+- **Login method**: password only in Phase 1; passkey (docs/spec.md §Architecture, hébergement, sécurité) is deferred.
+- **Password**: argon2id via `@node-rs/argon2` 2.2.2 (exact pin; prebuilt binaries, no compiler in Docker), memory 19 456 KiB, time 2, parallelism 1. Hash stored in `settings` under `auth_password_hash`: **any settings API (P1.5) must allowlist its keys and never return `auth_*`.** Set only with `npm run auth:set-password` (TTY, masked, typed twice, ≥ 12 characters); it revokes every session and clears the login lock. No password configured → login answers `invalid_credentials`.
+- **Sessions**: table `sessions`, keyed by SHA-256 of a 32-byte random id; the raw id exists only in the cookie. Kind chosen by the client (`longSession`): short (desktop) 12 h sliding / 24 h absolute; long (phone) 30 days sliding / 90 days absolute. Sliding expiry written at most once a minute. New id at every login (the presented session is deleted); expired rows purged at login; logout deletes the row.
+- **Cookie**: `__Host-sid`, HttpOnly, Secure, SameSite=Strict, Path=/, no Domain, Max-Age = absolute lifetime. Parsed by hand (no `cookie-parser`).
+- **CSRF / origin**: synchronizer token per session, returned by login and `GET /api/auth/session`, required in `X-CSRF-Token` on POST/PUT/PATCH/DELETE. Every mutation, login included, must carry `Origin` equal to `APP_ORIGIN`; a missing Origin is rejected. The server refuses to start without a valid `APP_ORIGIN`.
+- **Routes**: API under `/api`; `/api/auth/login` and `/health` are the only public routes; default deny before routing (unknown authenticated routes → 404 `not_found`). API responses are `Cache-Control: no-store`.
+- **Throttle**: one global counter in table `auth_throttle` (single row), hand-written (no `express-rate-limit`): 5 failures within 15 min → 15 min lock, even for the right password; the attempt is counted before the password check (parallel-safe); survives restarts; a success resets it. No per-IP limit: behind `tailscale serve` every request comes from 127.0.0.1.
+- **Errors and logs**: stable codes in `@suivi/shared` (`ApiErrorCode`). Log lines `auth: login ok (short|long)`, `auth: login failed`, `auth: locked`, `auth: login refused (locked)`, `auth: logout`, `auth: no password configured` — no IP, password, hash, session id or token. Client errors (malformed JSON, body > 10 kB) are not logged because their message can quote the body.
+- **App factory**: `createApp({ db, config, clock })` replaces the exported `app` singleton; the clock is injected for expiry tests. Migrations are not run at server start.
+- **Convention exception**: auth data (`sessions`, `auth_throttle`, `settings.auth_*`) is excluded from soft delete and from `change_log`. Sessions and throttle rows are hard-deleted; password changes are not journaled, so the append-only log never keeps old hashes.
+- **Dev env**: `dev:api`, `db:migrate`, `seed:reference` and `auth:set-password` load `packages/server/.env` if present (`--env-file-if-exists`), so they all target the same `DATABASE_PATH`; `packages/server/.env.example` lists names only. Empty `HOST`/`PORT` fall back to the defaults.
+
 ## 2026-10-07 — P1.3 database schema and reference seed
 
 - **Naming**: English snake_case. FR→EN mapping: comptes→`accounts`, enveloppes→`envelopes`, categories→`categories`, budgets→`budgets`, operations→`operations`, projets→`projects`, prets→`loans`, pointages→`reconciliations`, parametres→`settings`, journal_modifs→`change_log`. `table` is reserved so `change_log.table_name`; `avant/apres` → `before_json`/`after_json`. Envelope source `courant_carte` → `current_card`.

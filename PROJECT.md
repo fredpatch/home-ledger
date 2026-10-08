@@ -82,11 +82,14 @@ Public writes     none — app is not exposed outside the tailnet (no Funnel, no
 Sensitive data    password, session ids, balances and amounts never in logs, push payloads or error messages;
                   import file and database never committed
 Compliance        never install or open the app from an employer-managed (domain-joined) machine
+Server env        APP_ORIGIN (required; exact origin checked on mutations), DATABASE_PATH, HOST, PORT —
+                  names in packages/server/.env.example; dev:api, db:migrate, seed:reference and
+                  auth:set-password load packages/server/.env if present (same DATABASE_PATH)
 ```
 
 ## Commands
 
-Configured: `typecheck`, `build`, `test`, `dev:api`, `dev:client` (P1.1); `db:generate`, `db:migrate`, `db:check`, `seed:reference`, `test:integration` (P1.3). Every other command below is **not configured** until its slice adds it (AGENTS §4: never invent scripts, no stubs): `import:*` → P1.9; `backup:*` → P1.10.
+Configured: `typecheck`, `build`, `test`, `dev:api`, `dev:client` (P1.1); `db:generate`, `db:migrate`, `db:check`, `seed:reference`, `test:integration` (P1.3); `auth:set-password` (P1.4). Every other command below is **not configured** until its slice adds it (AGENTS §4: never invent scripts, no stubs): `import:*` → P1.9; `backup:*` → P1.10.
 
 Validation set (root):
 
@@ -107,6 +110,7 @@ auto    git status · git diff · git log · git show · git branch --show-curre
         npm run typecheck · npm run build · npm test · npm run db:check
 ask     npm run db:generate · npm run db:migrate · npm run test:integration
         npm run seed:* · npm run import:* · npm run backup:*
+        npm run auth:set-password (interactive; sets the password hash, revokes all sessions)
         npm run dev:api · npm run dev:client (QA runtime checks; stop afterwards)
         docker compose … · npm install / ci / any lockfile change · git add · git commit
 never   deleting or overwriting any *.db file · any command against the production volume
@@ -176,3 +180,5 @@ Validates   functional acceptance locally (commands, browser on PC and phone, SQ
 - Budget-month rule (R3): salary and savings dated on or after the 25th belong to the next month.
 - Personal financial data: `local-data/`, `*.db`, backups and `.env*` are gitignored; never paste real amounts into issues or test fixtures (fixtures use synthetic data, except the QA import run on Fred's machine).
 - PWA push on iPhone works only when the app is installed on the home screen; payloads stay generic (no amounts).
+- The session cookie is `__Host-sid` (Secure). Safari rejects Secure cookies on `http://localhost`: develop with Chrome/Edge on the PC; phone tests go through `tailscale serve` (HTTPS). curl does not send Secure cookies over `http://localhost` either: pass `-H "Cookie: __Host-sid=<value>"` explicitly.
+- `npm run auth:set-password` needs a real TTY: run it in PowerShell or the VS Code terminal, not Git Bash/mintty (no TTY there, the command refuses).

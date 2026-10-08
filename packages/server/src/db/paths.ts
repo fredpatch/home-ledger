@@ -20,6 +20,7 @@ export function migrationsFolder(): string {
 }
 
 // PROJECT.md §Data: DATABASE_PATH, default packages/server/data/dev.db. Tests never use this.
+// An empty value counts as unset: better-sqlite3 would open a throwaway temporary database.
 export function databasePathFromEnv(): string {
-  return process.env.DATABASE_PATH ?? join(serverRoot(), "data", "dev.db");
+  return process.env.DATABASE_PATH || join(serverRoot(), "data", "dev.db");
 }

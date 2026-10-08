@@ -4,6 +4,7 @@ export interface AppInfo {
 
 export const appInfo: AppInfo = { name: "Suivi financier" };
 
+export * from "./auth.js";
 export * from "./balance.js";
 export * from "./budget-month.js";
 export * from "./dates.js";

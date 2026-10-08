@@ -4,15 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
     "build": "node ../../scripts/clean-dist.mjs && tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/db/migrate-cli.ts",
+    "db:migrate": "tsx --env-file-if-exists=.env src/db/migrate-cli.ts",
     "db:check": "drizzle-kit check",
-    "seed:reference": "tsx src/db/seed/seed-cli.ts"
+    "seed:reference": "tsx --env-file-if-exists=.env src/db/seed/seed-cli.ts",
+    "auth:set-password": "tsx --env-file-if-exists=.env src/modules/auth/set-password-cli.ts"
   },
   "dependencies": {
+    "@node-rs/argon2": "2.2.2",
     "@suivi/shared": "0.0.0",
     "better-sqlite3": "13.0.3",
     "drizzle-orm": "0.45.4",

@@ -1,0 +1,1039 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "7068cb71-fcef-4fef-bffd-ce30f4224888",
+  "prevId": "0a5072f8-18f7-4bec-8b68-bec33439a453",
+  "tables": {
+    "accounts": {
+      "name": "accounts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "opening_balance": {
+          "name": "opening_balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "reconciliation_frequency": {
+          "name": "reconciliation_frequency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "funds_projects": {
+          "name": "funds_projects",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "active": {
+          "name": "active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "accounts_name_unique": {
+          "name": "accounts_name_unique",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "accounts_type_check": {
+          "name": "accounts_type_check",
+          "value": "\"type\" IN ('bank', 'mobile', 'cash', 'savings', 'card')"
+        },
+        "accounts_frequency_check": {
+          "name": "accounts_frequency_check",
+          "value": "\"reconciliation_frequency\" IN ('weekly', 'monthly')"
+        },
+        "accounts_opening_balance_check": {
+          "name": "accounts_opening_balance_check",
+          "value": "typeof(\"opening_balance\") = 'integer'"
+        },
+        "accounts_funds_projects_check": {
+          "name": "accounts_funds_projects_check",
+          "value": "\"funds_projects\" IN (0, 1)"
+        },
+        "accounts_active_check": {
+          "name": "accounts_active_check",
+          "value": "\"active\" IN (0, 1)"
+        }
+      }
+    },
+    "auth_throttle": {
+      "name": "auth_throttle",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "failed_count": {
+          "name": "failed_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "window_started_at": {
+          "name": "window_started_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "locked_until": {
+          "name": "locked_until",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "auth_throttle_single_row_check": {
+          "name": "auth_throttle_single_row_check",
+          "value": "\"id\" = 1"
+        },
+        "auth_throttle_failed_count_check": {
+          "name": "auth_throttle_failed_count_check",
+          "value": "typeof(\"failed_count\") = 'integer' AND \"failed_count\" >= 0"
+        }
+      }
+    },
+    "budgets": {
+      "name": "budgets",
+      "columns": {
+        "budget_month": {
+          "name": "budget_month",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "budgets_category_id_categories_id_fk": {
+          "name": "budgets_category_id_categories_id_fk",
+          "tableFrom": "budgets",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "budgets_budget_month_category_id_pk": {
+          "columns": [
+            "budget_month",
+            "category_id"
+          ],
+          "name": "budgets_budget_month_category_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "budgets_month_check": {
+          "name": "budgets_month_check",
+          "value": "date(\"budget_month\" || '-01') IS \"budget_month\" || '-01'"
+        },
+        "budgets_amount_check": {
+          "name": "budgets_amount_check",
+          "value": "typeof(\"amount\") = 'integer' AND \"amount\" >= 0 AND \"amount\" <= 9007199254740991"
+        }
+      }
+    },
+    "categories": {
+      "name": "categories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "class": {
+          "name": "class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "envelope_id": {
+          "name": "envelope_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rolls_over": {
+          "name": "rolls_over",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "active": {
+          "name": "active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {
+        "categories_name_unique": {
+          "name": "categories_name_unique",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "categories_envelope_id_envelopes_id_fk": {
+          "name": "categories_envelope_id_envelopes_id_fk",
+          "tableFrom": "categories",
+          "tableTo": "envelopes",
+          "columnsFrom": [
+            "envelope_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "categories_class_check": {
+          "name": "categories_class_check",
+          "value": "\"class\" IN ('revenue', 'expense', 'transfer', 'savings', 'project', 'loan', 'repayment', 'adjustment')"
+        },
+        "categories_envelope_check": {
+          "name": "categories_envelope_check",
+          "value": "(\"class\" = 'expense' AND \"envelope_id\" IS NOT NULL) OR (\"class\" <> 'expense' AND \"envelope_id\" IS NULL)"
+        },
+        "categories_rolls_over_check": {
+          "name": "categories_rolls_over_check",
+          "value": "\"rolls_over\" IN (0, 1)"
+        },
+        "categories_active_check": {
+          "name": "categories_active_check",
+          "value": "\"active\" IN (0, 1)"
+        }
+      }
+    },
+    "change_log": {
+      "name": "change_log",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "table_name": {
+          "name": "table_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "row_id": {
+          "name": "row_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "before_json": {
+          "name": "before_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "after_json": {
+          "name": "after_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "changed_at": {
+          "name": "changed_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "envelopes": {
+      "name": "envelopes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "envelopes_name_unique": {
+          "name": "envelopes_name_unique",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "envelopes_source_check": {
+          "name": "envelopes_source_check",
+          "value": "\"source\" IN ('pot', 'current_card')"
+        }
+      }
+    },
+    "loans": {
+      "name": "loans",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "person": {
+          "name": "person",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'open'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "loans_amount_check": {
+          "name": "loans_amount_check",
+          "value": "typeof(\"amount\") = 'integer' AND \"amount\" > 0 AND \"amount\" <= 9007199254740991"
+        },
+        "loans_date_check": {
+          "name": "loans_date_check",
+          "value": "date(\"date\") IS \"date\""
+        },
+        "loans_status_check": {
+          "name": "loans_status_check",
+          "value": "\"status\" IN ('open', 'settled')"
+        }
+      }
+    },
+    "operations": {
+      "name": "operations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "budget_month": {
+          "name": "budget_month",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "class": {
+          "name": "class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_account_id": {
+          "name": "source_account_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "dest_account_id": {
+          "name": "dest_account_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "client": {
+          "name": "client",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usage": {
+          "name": "usage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "loan_id": {
+          "name": "loan_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'validated'"
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source_ref": {
+          "name": "source_ref",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "operations_source_ref_unique": {
+          "name": "operations_source_ref_unique",
+          "columns": [
+            "source_ref"
+          ],
+          "isUnique": true
+        },
+        "operations_date_idx": {
+          "name": "operations_date_idx",
+          "columns": [
+            "date"
+          ],
+          "isUnique": false
+        },
+        "operations_budget_month_idx": {
+          "name": "operations_budget_month_idx",
+          "columns": [
+            "budget_month"
+          ],
+          "isUnique": false
+        },
+        "operations_category_idx": {
+          "name": "operations_category_idx",
+          "columns": [
+            "category_id"
+          ],
+          "isUnique": false
+        },
+        "operations_source_account_idx": {
+          "name": "operations_source_account_idx",
+          "columns": [
+            "source_account_id"
+          ],
+          "isUnique": false
+        },
+        "operations_dest_account_idx": {
+          "name": "operations_dest_account_idx",
+          "columns": [
+            "dest_account_id"
+          ],
+          "isUnique": false
+        },
+        "operations_project_idx": {
+          "name": "operations_project_idx",
+          "columns": [
+            "project_id"
+          ],
+          "isUnique": false
+        },
+        "operations_loan_idx": {
+          "name": "operations_loan_idx",
+          "columns": [
+            "loan_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "operations_category_id_categories_id_fk": {
+          "name": "operations_category_id_categories_id_fk",
+          "tableFrom": "operations",
+          "tableTo": "categories",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "operations_source_account_id_accounts_id_fk": {
+          "name": "operations_source_account_id_accounts_id_fk",
+          "tableFrom": "operations",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "source_account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "operations_dest_account_id_accounts_id_fk": {
+          "name": "operations_dest_account_id_accounts_id_fk",
+          "tableFrom": "operations",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "dest_account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "operations_project_id_projects_id_fk": {
+          "name": "operations_project_id_projects_id_fk",
+          "tableFrom": "operations",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "operations_loan_id_loans_id_fk": {
+          "name": "operations_loan_id_loans_id_fk",
+          "tableFrom": "operations",
+          "tableTo": "loans",
+          "columnsFrom": [
+            "loan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "operations_date_check": {
+          "name": "operations_date_check",
+          "value": "date(\"date\") IS \"date\""
+        },
+        "operations_budget_month_check": {
+          "name": "operations_budget_month_check",
+          "value": "date(\"budget_month\" || '-01') IS \"budget_month\" || '-01'"
+        },
+        "operations_amount_check": {
+          "name": "operations_amount_check",
+          "value": "typeof(\"amount\") = 'integer' AND \"amount\" > 0 AND \"amount\" <= 9007199254740991"
+        },
+        "operations_class_check": {
+          "name": "operations_class_check",
+          "value": "\"class\" IN ('revenue', 'expense', 'transfer', 'savings', 'project', 'loan', 'repayment', 'adjustment')"
+        },
+        "operations_usage_check": {
+          "name": "operations_usage_check",
+          "value": "\"usage\" IS NULL OR \"usage\" IN ('personal', 'activity', 'mixed')"
+        },
+        "operations_status_check": {
+          "name": "operations_status_check",
+          "value": "\"status\" IN ('draft', 'validated')"
+        },
+        "operations_field_matrix_check": {
+          "name": "operations_field_matrix_check",
+          "value": "(\"class\" = 'revenue' AND \"dest_account_id\" IS NOT NULL AND \"source_account_id\" IS NULL AND \"project_id\" IS NULL AND \"loan_id\" IS NULL) OR (\"class\" = 'expense' AND \"source_account_id\" IS NOT NULL AND \"dest_account_id\" IS NULL AND \"project_id\" IS NULL AND \"loan_id\" IS NULL) OR (\"class\" = 'transfer' AND \"source_account_id\" IS NOT NULL AND \"dest_account_id\" IS NOT NULL AND \"source_account_id\" <> \"dest_account_id\" AND \"loan_id\" IS NULL) OR (\"class\" = 'savings' AND \"source_account_id\" IS NOT NULL AND \"dest_account_id\" IS NOT NULL AND \"source_account_id\" <> \"dest_account_id\" AND \"project_id\" IS NULL AND \"loan_id\" IS NULL) OR (\"class\" = 'project' AND \"source_account_id\" IS NOT NULL AND \"project_id\" IS NOT NULL AND \"dest_account_id\" IS NULL AND \"loan_id\" IS NULL) OR (\"class\" = 'loan' AND \"source_account_id\" IS NOT NULL AND \"loan_id\" IS NOT NULL AND \"dest_account_id\" IS NULL AND \"project_id\" IS NULL) OR (\"class\" = 'repayment' AND \"dest_account_id\" IS NOT NULL AND \"loan_id\" IS NOT NULL AND \"source_account_id\" IS NULL AND \"project_id\" IS NULL) OR (\"class\" = 'adjustment' AND (\"source_account_id\" IS NOT NULL) <> (\"dest_account_id\" IS NOT NULL) AND \"project_id\" IS NULL AND \"loan_id\" IS NULL)"
+        }
+      }
+    },
+    "projects": {
+      "name": "projects",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ceiling": {
+          "name": "ceiling",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "projects_status_check": {
+          "name": "projects_status_check",
+          "value": "\"status\" IN ('active', 'closed')"
+        },
+        "projects_ceiling_check": {
+          "name": "projects_ceiling_check",
+          "value": "\"ceiling\" IS NULL OR (typeof(\"ceiling\") = 'integer' AND \"ceiling\" > 0 AND \"ceiling\" <= 9007199254740991)"
+        },
+        "projects_due_date_check": {
+          "name": "projects_due_date_check",
+          "value": "\"due_date\" IS NULL OR date(\"due_date\") IS \"due_date\""
+        }
+      }
+    },
+    "reconciliations": {
+      "name": "reconciliations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "actual_balance": {
+          "name": "actual_balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "theoretical_balance": {
+          "name": "theoretical_balance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "gap": {
+          "name": "gap",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "adjustment_operation_id": {
+          "name": "adjustment_operation_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "reconciliations_account_date_idx": {
+          "name": "reconciliations_account_date_idx",
+          "columns": [
+            "account_id",
+            "date"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reconciliations_account_id_accounts_id_fk": {
+          "name": "reconciliations_account_id_accounts_id_fk",
+          "tableFrom": "reconciliations",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "account_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reconciliations_adjustment_operation_id_operations_id_fk": {
+          "name": "reconciliations_adjustment_operation_id_operations_id_fk",
+          "tableFrom": "reconciliations",
+          "tableTo": "operations",
+          "columnsFrom": [
+            "adjustment_operation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "reconciliations_date_check": {
+          "name": "reconciliations_date_check",
+          "value": "date(\"date\") IS \"date\""
+        },
+        "reconciliations_integers_check": {
+          "name": "reconciliations_integers_check",
+          "value": "typeof(\"actual_balance\") = 'integer' AND typeof(\"theoretical_balance\") = 'integer' AND typeof(\"gap\") = 'integer'"
+        },
+        "reconciliations_gap_check": {
+          "name": "reconciliations_gap_check",
+          "value": "\"gap\" = \"actual_balance\" - \"theoretical_balance\""
+        }
+      }
+    },
+    "sessions": {
+      "name": "sessions",
+      "columns": {
+        "id_hash": {
+          "name": "id_hash",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "csrf_token": {
+          "name": "csrf_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_seen_at": {
+          "name": "last_seen_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "absolute_expires_at": {
+          "name": "absolute_expires_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "sessions_kind_check": {
+          "name": "sessions_kind_check",
+          "value": "\"kind\" IN ('short', 'long')"
+        },
+        "sessions_id_hash_check": {
+          "name": "sessions_id_hash_check",
+          "value": "length(\"id_hash\") = 64"
+        }
+      }
+    },
+    "settings": {
+      "name": "settings",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}
