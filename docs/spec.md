@@ -70,7 +70,7 @@ La classe et l'enveloppe sont déduites de la catégorie, jamais saisies. Une co
 
 - Une enveloppe = un plafond mensuel estimé sur un groupe de catégories. Ce n'est pas de l'argent mis de côté.
 - Aucun report : chaque enveloppe repart à son montant le 1er du mois (Famille 100 000 en novembre non dépensé ≠ 200 000 en décembre).
-- Chaque enveloppe indique sa source : « pot du mois » (mobile + espèces) ou « courant / carte », pour que la prévision du pot ne compte pas l'argent payé ailleurs. Abonnements = carte prépayée ; Voiture / entretien = courant (réserve de sécurité, rarement utilisée) ; toutes les autres = pot.
+- Chaque enveloppe indique sa source : « pot du mois » (mobile + espèces) ou « courant / carte », pour que la prévision du pot ne compte pas l'argent payé ailleurs. Abonnements = carte prépayée ; Voiture / entretien et Santé = courant (réserve de sécurité, rarement utilisée) ; toutes les autres = pot.
 - Budgets historisés par mois ; un nouveau mois copie le précédent.
 
 ### R5 — Renforts
