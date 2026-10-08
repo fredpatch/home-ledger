@@ -3,7 +3,8 @@ export type DomainErrorCode =
   | "invalid_date"
   | "invalid_budget_month"
   | "invalid_rollover_day"
-  | "invalid_opening_balance";
+  | "invalid_opening_balance"
+  | "invalid_setting";
 
 // Stable codes only; the client maps them to French messages.
 export class DomainError extends Error {

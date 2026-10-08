@@ -16,7 +16,7 @@ const count = (table: string) => (t.sqlite.prepare(`SELECT COUNT(*) AS n FROM ${
 
 test("seed inserts the approved reference data, then a second run changes nothing", () => {
   const first = seedReference(t.db);
-  assert.deepEqual(first, { accounts: 6, envelopes: 8, categories: 29, budgets: 13, settings: 4 });
+  assert.deepEqual(first, { accounts: 6, envelopes: 8, categories: 29, budgets: 13, settings: 5 });
   const second = seedReference(t.db);
   assert.deepEqual(second, { accounts: 0, envelopes: 0, categories: 0, budgets: 0, settings: 0 });
   assert.equal(count("accounts"), 6);

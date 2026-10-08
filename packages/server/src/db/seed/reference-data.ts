@@ -107,4 +107,6 @@ export const SETTING_SEEDS: readonly { readonly key: string; readonly value: str
   { key: "budget_rollover_day", value: "25" },
   { key: "cash_tolerance", value: "5000" },
   { key: "opening_date", value: "2026-10-01" },
+  // docs/decisions.md 2026-10-08 + P1.5 plan Q4: tolerance before the pot warning.
+  { key: "pot_budget_tolerance", value: "0" },
 ];

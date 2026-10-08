@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import type { RequestHandler, Response } from "express";
-import type { ApiErrorCode } from "@suivi/shared";
+import type { ApiErrorBody, ApiErrorCode, ValidationIssue } from "@suivi/shared";
 import type { AppConfig, Clock } from "../../config.js";
 import type { AppDatabase } from "../../db/connection.js";
 import { readCookie, SESSION_COOKIE } from "./cookies.js";
@@ -8,8 +8,9 @@ import { resolveSession, type ActiveSession } from "./session.service.js";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
-export function sendError(res: Response, status: number, error: ApiErrorCode): void {
-  res.status(status).json({ error });
+export function sendError(res: Response, status: number, error: ApiErrorCode, issues?: readonly ValidationIssue[]): void {
+  const body: ApiErrorBody = issues === undefined ? { error } : { error, issues };
+  res.status(status).json(body);
 }
 
 export function currentSession(res: Response): ActiveSession {

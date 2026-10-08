@@ -64,6 +64,8 @@ Known non-blocking notes:
 - The Excel import file stays in `local-data/` (gitignored); QA import runs only on Fred's machine.
 - Phase 2 (R13): closed-month guard on operations deferred from P1.5 — no `clotures` table yet (P1.5 Q1).
 - Phase 2: journal settings edits in `change_log` (needs a row id convention for text keys; P1.5 Q5).
+- P1.6: disable the save button while a request is pending (no idempotency key on POST /api/operations).
+- P1.7: give the pot category a stable key instead of matching the name "Chargement du pot".
 
 ## Environment constraints
 

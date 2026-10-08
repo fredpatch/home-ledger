@@ -12,4 +12,7 @@ export * from "./errors.js";
 export * from "./money.js";
 export * from "./operation-class.js";
 export * from "./operation-rules.js";
+export * from "./operations.js";
+export * from "./pot.js";
 export * from "./reference.js";
+export * from "./settings.js";

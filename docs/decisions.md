@@ -2,6 +2,17 @@
 
 Newest first.
 
+## 2026-10-08 — P1.5 operations API (rules accepted at review)
+
+- **Class immutable on edit**: an edit cannot move an operation to a category of another class (`class_change_forbidden`); delete and re-enter instead.
+- **Loan link immutable**: a loan operation's `loanId` never changes; its receivable follows its amount, date and person.
+- **Loan delete**: blocked while live repayments exist (422 `has_repayments`).
+- **Loan liveness**: a loan is live if and only if its loan operation is live; consumers (e.g. "Prêts en cours", R10) must join on a live loan operation.
+- **`loanPerson`**: rejected on non-loan operations, `null` included (`field_forbidden`).
+- **DELETE** `/api/operations/:id` answers 200 `{ warnings }`, not 204, so a pot warning can be returned.
+- **Q9 override detection** compares the stored month with the one computed using the *current* rollover day: after changing `budget_rollover_day`, older rolled-over operations read as manual overrides. Accepted.
+- **Pot category**: found by name ("Chargement du pot"); a stable key replaces the name in P1.7.
+
 ## 2026-10-08 — Budget envelopes vs pot
 
 - **Pot-funded budgets exceeding the pot**: warn, never block; the tolerance comes from settings.

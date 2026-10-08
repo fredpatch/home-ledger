@@ -1,5 +1,7 @@
 // Authentication contract shared by the API and the client (PROJECT.md §Security).
 
+import type { OperationIssueCode } from "./operation-rules.js";
+
 // Stable API error codes; the client maps them to French messages (docs/app-flow.md F1).
 export type ApiErrorCode =
   | "auth_required"
@@ -8,12 +10,42 @@ export type ApiErrorCode =
   | "csrf_invalid"
   | "origin_rejected"
   | "invalid_request"
+  | "validation_failed"
   | "not_found"
+  | "conflict"
   | "internal_error";
+
+// Field-level reasons returned with validation_failed. Never carries the submitted value.
+export type ValidationIssueCode =
+  | OperationIssueCode
+  | "required"
+  | "invalid"
+  | "too_long"
+  | "unknown_field"
+  | "invalid_date"
+  | "invalid_budget_month"
+  | "not_found"
+  | "inactive"
+  | "not_project_funding"
+  | "exceeds_remaining"
+  | "class_change_forbidden"
+  | "has_repayments"
+  | "read_only"
+  | "out_of_range";
+
+export interface ValidationIssue {
+  readonly field: string;
+  readonly code: ValidationIssueCode;
+}
 
 export interface ApiErrorBody {
   readonly error: ApiErrorCode;
+  readonly issues?: readonly ValidationIssue[];
 }
+
+export type ParseResult<T> =
+  | { readonly ok: true; readonly value: T }
+  | { readonly ok: false; readonly issues: readonly ValidationIssue[] };
 
 // short = desktop, long = phone (PROJECT.md §Security).
 export const SESSION_KINDS = ["short", "long"] as const;
