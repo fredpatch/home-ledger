@@ -100,7 +100,8 @@ unit tests          npm test                   (builds shared + server, runs com
 integration tests   npm run test:integration   (real SQLite in an OS temp dir; ask tier)
 schema check        npm run db:check           (drizzle-kit check on migration files; no DB access)
 lint                not configured
-client tests        none — client acceptance = typecheck + build + developer browser check
+client tests        node:test on pure client modules (P1.6; no component rendering, no E2E framework);
+                    UI acceptance = typecheck + build + developer browser check
 ```
 
 Tiers (mirrored in `.vscode/settings.json`):

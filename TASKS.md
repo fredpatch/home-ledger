@@ -9,9 +9,10 @@
 Branch            phase-1
 Iteration         Phase 1 — Socle
 Active slice      P1.6
-Workflow state    PLANNING
+Workflow state    IN_PROGRESS
+Approved plan     docs/plans/P1.6.md (approved 2026-10-08)
 Last validated    P1.5 — 2026-10-08 (commit bfc4703; manual E2E deferred to P1.6)
-Next action       Planner: plan P1.6 (client shell, login, quick entry); include the P1.5 carry-over checklist
+Next action       Implementer: shared helper + GET /api/reference first, stop for review; then client
 ```
 
 ## Phase 1 slices
@@ -23,7 +24,7 @@ Next action       Planner: plan P1.6 (client shell, login, quick entry); include
 | P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | CLOSED — Fred validated 2026-10-08 (d68ebc4)    |
 | P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | CLOSED — Fred validated 2026-10-08 (73a6e5e)    |
 | P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | CLOSED — Fred validated 2026-10-08 (bfc4703)    |
-| P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | PLANNING                                        |
+| P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | IN_PROGRESS                                     |
 | P1.7  | Desktop journal (filters, inline edit) + current-month budget view by envelope                                                                                                                                                                 | P1.5, P1.6 | —                                               |
 | P1.8  | Accounts + reconciliation (pointage): theoretical vs real balance, gap, adjustment operation, cash tolerance (R12)                                                                                                                             | P1.5       | —                                               |
 | P1.9  | Import Excel v9.3 with preview: mapping + corrections from `docs/spec.md §Migration`, opening balances at 2026-10-01                                                                                                                           | P1.5, P1.8 | —                                               |
@@ -65,6 +66,9 @@ Known non-blocking notes:
 - Phase 2: journal settings edits in `change_log` (needs a row id convention for text keys; P1.5 Q5).
 - P1.6: disable the save button while a request is pending (no idempotency key on POST /api/operations).
 - P1.7: give the pot category a stable key instead of matching the name "Chargement du pot".
+- Later slice: custom amount keypad (design brief §7) replaced by a numeric input in P1.6 (P1.6 Q6).
+- Later slice: F1.4 restore of an open form after sign-in not done in P1.6 (P1.6 Q8).
+- P1.10: iPhone checks over `tailscale serve` (APP_ORIGIN = ts.net origin), deferred from P1.6 (Q10).
 - P1.5 closed with the manual end-to-end check deferred to P1.6 (Fred, 2026-10-08): run the carry-over below during P1.6 QA.
 
 ### P1.6 carry-over — P1.5 manual E2E (PowerShell, throwaway database)
@@ -97,12 +101,12 @@ node -e "const D=require('better-sqlite3');const d=new D(process.env.DATABASE_PA
 ```text
 Branch            phase-1
 Slice             P1.6
-Workflow state    PLANNING
-Approved goal     Phase 1 — Socle (docs/spec.md §Phases)
+Workflow state    IN_PROGRESS
+Approved goal     Phase 1 — Socle (docs/spec.md §Phases); P1.6 plan = docs/plans/P1.6.md
 ✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4); P1.4 single-account auth (73a6e5e); P1.5 operations and settings API (bfc4703)
-⏳ Pending        P1.6 plan; P1.5 manual E2E (carry-over); push phase-1 (Fred)
+⏳ Pending        P1.6 implementation; P1.5 manual E2E (carry-over); push phase-1 (Fred)
 Validation done   P1.5: typecheck/build/db:check green; npm test 71/71; test:integration 57/57 (agent-run); review passed with notes (findings resolved); QA passed with limitations; Fred validated Gate 2
 Not validated     P1.5 manual E2E against dev:api (deferred to P1.6)
 Risks/blockers    none
-Next action       Planner plans P1.6; Fred approves
+Next action       Implementer: P1.6 server part, then review, then client
 ```
