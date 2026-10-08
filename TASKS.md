@@ -9,9 +9,10 @@
 Branch            phase-1
 Iteration         Phase 1 — Socle
 Active slice      P1.5
-Workflow state    PLANNING
+Workflow state    IN_PROGRESS
+Approved plan     docs/plans/P1.5.md (approved 2026-10-08)
 Last validated    P1.4 — 2026-10-08 (commit 73a6e5e)
-Next action       Planner: read docs/spec.md operation rules and docs/decisions.md, raise yes/no questions, plan P1.5
+Next action       Implementer: P1.5 layer by layer (shared → service → routes → tests)
 ```
 
 ## Phase 1 slices
@@ -22,7 +23,7 @@ Next action       Planner: read docs/spec.md operation rules and docs/decisions.
 | P1.2  | Shared domain (pure, tested): operation classes and allowed combinations (R2), budget-month rule (R3), theoretical balance per account, amount/date validation                                                                                 | P1.1       | CLOSED — Fred validated 2026-10-07 (73cbb86)    |
 | P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | CLOSED — Fred validated 2026-10-08 (d68ebc4)    |
 | P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | CLOSED — Fred validated 2026-10-08 (73a6e5e)    |
-| P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | PLANNING                                        |
+| P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | IN_PROGRESS                                     |
 | P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | —                                               |
 | P1.7  | Desktop journal (filters, inline edit) + current-month budget view by envelope                                                                                                                                                                 | P1.5, P1.6 | —                                               |
 | P1.8  | Accounts + reconciliation (pointage): theoretical vs real balance, gap, adjustment operation, cash tolerance (R12)                                                                                                                             | P1.5       | —                                               |
@@ -61,6 +62,8 @@ Known non-blocking notes:
 - P1.10: review npm audit (4 moderate) before deployment; prod image installs runtime deps only.
 - Open data question: October pot-sourced budgets 435 500 vs pot ≈ 400 000.
 - The Excel import file stays in `local-data/` (gitignored); QA import runs only on Fred's machine.
+- Phase 2 (R13): closed-month guard on operations deferred from P1.5 — no `clotures` table yet (P1.5 Q1).
+- Phase 2: journal settings edits in `change_log` (needs a row id convention for text keys; P1.5 Q5).
 
 ## Environment constraints
 
@@ -72,12 +75,12 @@ Known non-blocking notes:
 ```text
 Branch            phase-1
 Slice             P1.5
-Workflow state    PLANNING
-Approved goal     Phase 1 — Socle (docs/spec.md §Phases)
+Workflow state    IN_PROGRESS
+Approved goal     Phase 1 — Socle (docs/spec.md §Phases); P1.5 plan = docs/plans/P1.5.md
 ✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4); P1.4 single-account auth (73a6e5e)
-⏳ Pending        P1.5 plan; push phase-1 (Fred)
+⏳ Pending        P1.5 implementation; push phase-1 (Fred)
 Validation done   P1.4: typecheck/build/db:check green; npm test 54/54; test:integration 38/38 (agent-run); review passed with notes (fixes applied); QA passed with limitations; Fred validated Gate 2
 Not validated     —
 Risks/blockers    none
-Next action       Planner plans P1.5; Fred approves
+Next action       Implementer implements P1.5, then Reviewer
 ```

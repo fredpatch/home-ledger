@@ -110,6 +110,7 @@ auto    git status · git diff · git log · git show · git branch --show-curre
         npm run typecheck · npm run build · npm test · npm run db:check
 ask     npm run db:generate · npm run db:migrate · npm run test:integration
         npm run seed:* · npm run import:* · npm run backup:*
+        node --test <one compiled test file under packages/*/dist/test/> (fix loops, after npm run build)
         npm run auth:set-password (interactive; sets the password hash, revokes all sessions)
         npm run dev:api · npm run dev:client (QA runtime checks; stop afterwards)
         docker compose … · npm install / ci / any lockfile change · git add · git commit
