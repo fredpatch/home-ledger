@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { OPERATION_CLASSES, validateOperationShape } from "../src/index.js";
+import { OPERATION_CLASSES, operationFieldRules, validateOperationShape } from "../src/index.js";
 import type { OperationIssue, OperationShape } from "../src/index.js";
 
 function shape(operationClass: string, fields: Partial<OperationShape> = {}): OperationShape {
@@ -128,4 +128,43 @@ test("R2: null and undefined ids count as absent", () => {
   assert.deepEqual(issues("expense", { sourceAccountId: null }), [
     { code: "field_required", field: "sourceAccountId" },
   ]);
+});
+
+test("operationFieldRules agrees with validateOperationShape for every class (P1.6)", () => {
+  const links = ["sourceAccountId", "destAccountId", "projectId", "loanId"] as const;
+  for (const operationClass of OPERATION_CLASSES) {
+    const rule = operationFieldRules(operationClass);
+    const base: Record<string, number> = {};
+    // Adjustment needs exactly one account: the source one stands for both cases.
+    const required = rule.exactlyOneAccount ? ["sourceAccountId" as const] : rule.required;
+    required.forEach((field, index) => (base[field] = index + 1));
+    assert.deepEqual(validateOperationShape({ operationClass, amount: 100, ...base }), [], operationClass);
+    for (const field of links) {
+      const listed = rule.required.includes(field) || rule.optional.includes(field);
+      if (!listed) {
+        const issues = validateOperationShape({ operationClass, amount: 100, ...base, [field]: 99 });
+        assert.ok(issues.some((issue) => issue.code === "field_forbidden" && issue.field === field), `${operationClass} ${field}`);
+      }
+      if (rule.optional.includes(field) && !rule.exactlyOneAccount) {
+        assert.deepEqual(validateOperationShape({ operationClass, amount: 100, ...base, [field]: 99 }), [], `${operationClass} accepts ${field}`);
+      }
+      if (rule.required.includes(field)) {
+        const { [field]: _removed, ...without } = base;
+        assert.ok(validateOperationShape({ operationClass, amount: 100, ...without }).length > 0, `${operationClass} needs ${field}`);
+      }
+    }
+  }
+  // Adjustment: either account alone is valid; both or neither are rejected.
+  for (const accounts of [{ sourceAccountId: 1 }, { destAccountId: 2 }]) {
+    assert.deepEqual(validateOperationShape({ operationClass: "adjustment", amount: 100, ...accounts }), []);
+  }
+  for (const accounts of [{ sourceAccountId: 1, destAccountId: 2 }, {}]) {
+    const issues = validateOperationShape({ operationClass: "adjustment", amount: 100, ...accounts });
+    assert.ok(issues.some((issue) => issue.code === "adjustment_one_account"), JSON.stringify(accounts));
+  }
+  assert.deepEqual(operationFieldRules("adjustment"), {
+    required: [],
+    optional: ["sourceAccountId", "destAccountId"],
+    exactlyOneAccount: true,
+  });
 });

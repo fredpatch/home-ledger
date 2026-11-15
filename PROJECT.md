@@ -96,7 +96,7 @@ Validation set (root):
 ```text
 typecheck           npm run typecheck
 build               npm run build              (cleans each package's dist/ first)
-unit tests          npm test                   (builds shared + server, runs compiled unit tests; no DB file)
+unit tests          npm test                   (builds shared + server, compiles client pure modules, runs compiled unit tests; no DB file)
 integration tests   npm run test:integration   (real SQLite in an OS temp dir; ask tier)
 schema check        npm run db:check           (drizzle-kit check on migration files; no DB access)
 lint                not configured

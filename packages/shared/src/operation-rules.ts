@@ -106,3 +106,22 @@ export function validateOperationShape(shape: OperationShape): OperationIssue[] 
 export function isOperationShapeValid(shape: OperationShape): boolean {
   return validateOperationShape(shape).length === 0;
 }
+
+export interface OperationFieldRule {
+  readonly required: readonly OperationLinkField[];
+  readonly optional: readonly OperationLinkField[];
+  /** Adjustment: exactly one of sourceAccountId / destAccountId (docs/decisions.md 2026-10-07). */
+  readonly exactlyOneAccount: boolean;
+}
+
+/**
+ * The R2 field matrix for one class, so a form can show only the fields the class needs (P1.6).
+ * validateOperationShape stays the authority; any field not listed is forbidden.
+ */
+export function operationFieldRules(operationClass: OperationClass): OperationFieldRule {
+  if (operationClass === "adjustment") {
+    return { required: [], optional: ["sourceAccountId", "destAccountId"], exactlyOneAccount: true };
+  }
+  const rule = FIELD_RULES[operationClass];
+  return { required: rule.required, optional: rule.optional, exactlyOneAccount: false };
+}

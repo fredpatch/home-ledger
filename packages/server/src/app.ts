@@ -4,6 +4,7 @@ import type { AppDatabase } from "./db/connection.js";
 import { requireCsrf, requireOrigin, requireSession, sendError } from "./modules/auth/auth.middleware.js";
 import { protectedAuthRoutes, publicAuthRoutes } from "./modules/auth/auth.routes.js";
 import { operationRoutes } from "./modules/operations/operations.routes.js";
+import { referenceRoutes } from "./modules/reference/reference.routes.js";
 import { settingsRoutes } from "./modules/settings/settings.routes.js";
 
 export interface AppDependencies {
@@ -51,6 +52,7 @@ export function createApp({ db, config, clock = systemClock }: AppDependencies):
   api.use(requireCsrf);
   api.use(protectedAuthRoutes(db));
   api.use(operationRoutes(db, clock));
+  api.use(referenceRoutes(db));
   api.use(settingsRoutes(db));
   api.use((_req, res) => {
     sendError(res, 404, "not_found");

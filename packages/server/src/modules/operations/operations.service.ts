@@ -348,7 +348,7 @@ function openableLoan(db: AppDatabase, loanId: Id): LoanRow | undefined {
 }
 
 /** Sum of the live repayments of a loan, optionally excluding one operation (the one being edited). */
-function repaidAmount(db: AppDatabase, loanId: Id, excludeOperationId: Id | null): number {
+export function repaidAmount(db: AppDatabase, loanId: Id, excludeOperationId: Id | null): number {
   const conditions = [eq(operations.loanId, loanId), eq(operations.class, "repayment"), isNull(operations.deletedAt)];
   if (excludeOperationId !== null) conditions.push(ne(operations.id, excludeOperationId));
   const row = db

@@ -11,7 +11,7 @@
   "scripts": {
     "typecheck": "npm run build -w @suivi/shared && npm run typecheck --workspaces --if-present",
     "build": "npm run build -w @suivi/shared && npm run build -w @suivi/server && npm run build -w @suivi/client",
-    "test": "npm run build -w @suivi/shared -w @suivi/server && node --test \"packages/shared/dist/test/*.test.js\" \"packages/server/dist/test/*.test.js\"",
+    "test": "npm run build -w @suivi/shared -w @suivi/server && npm run test:build -w @suivi/client && node --test \"packages/shared/dist/test/*.test.js\" \"packages/server/dist/test/*.test.js\" \"packages/client/dist/node-test/test/*.test.js\"",
     "db:generate": "npm run db:generate -w @suivi/server",
     "db:migrate": "npm run db:migrate -w @suivi/server",
     "db:check": "npm run db:check -w @suivi/server",

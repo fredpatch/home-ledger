@@ -1,0 +1,361 @@
+/* Shared primitives (docs/design-brief.md §2, §4, §6, §7, §8). */
+
+.shell {
+  min-height: 100vh;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+}
+
+.navItem {
+  min-width: 88px;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.navItemActive {
+  composes: navItem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.navAdd {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (min-width: 1024px) {
+  .shell {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding-bottom: 0;
+  }
+  .nav {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 4px;
+    border-top: 0;
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+  }
+  .navItem,
+  .navItemActive {
+    text-align: left;
+    padding: 0 12px;
+    border-radius: var(--radius-control);
+    font-size: 15px;
+  }
+  .navAdd {
+    order: -1;
+    width: auto;
+    height: 44px;
+    border-radius: var(--radius-control);
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .navAdd::after {
+    content: " Opération";
+  }
+  .main {
+    max-width: 960px;
+    padding: 24px 32px;
+  }
+}
+
+.title {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spaceBetween {
+  composes: row;
+  justify-content: space-between;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.hero {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.expense {
+  color: var(--text);
+}
+.income {
+  color: var(--income);
+}
+.neutral {
+  color: var(--neutral);
+}
+.savings {
+  color: var(--savings);
+}
+
+.button {
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primary {
+  composes: button;
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.danger {
+  composes: button;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+
+.input {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  width: 100%;
+}
+
+.fieldError {
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.chipSelected {
+  composes: chip;
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+}
+
+.banner {
+  border-radius: var(--radius-control);
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bannerDanger {
+  composes: banner;
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  color: var(--danger);
+}
+
+.bannerWarning {
+  composes: banner;
+  background: color-mix(in srgb, var(--warning) 10%, transparent);
+  color: var(--warning);
+}
+
+.bannerInfo {
+  composes: banner;
+  background: color-mix(in srgb, var(--income) 10%, transparent);
+  color: var(--income);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.listRow {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.listRow:last-child {
+  border-bottom: 0;
+}
+
+.skeleton {
+  height: 56px;
+  border-radius: var(--radius-control);
+  background: var(--surface-muted);
+  margin-bottom: 8px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--scrim);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10;
+}
+
+.sheet {
+  background: var(--surface);
+  width: 100%;
+  max-height: 100vh;
+  overflow-y: auto;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 1024px) {
+  .overlay {
+    align-items: center;
+  }
+  .sheet {
+    max-width: 560px;
+    max-height: 90vh;
+    border-radius: var(--radius-card);
+    padding: 24px;
+  }
+}
+
+.center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.narrow {
+  width: 100%;
+  max-width: 360px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldset {
+  composes: field;
+  border: 0;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+.group {
+  margin-bottom: 12px;
+}
+
+.spacedTop {
+  margin-top: 16px;
+}
