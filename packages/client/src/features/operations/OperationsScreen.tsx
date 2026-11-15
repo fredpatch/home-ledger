@@ -15,7 +15,8 @@ interface Props {
 }
 
 function errorText(error: unknown): string {
-  return apiErrorMessage(error instanceof ApiError && error.failure.kind === "error" ? error.failure.code : "network");
+  const isNetwork = error instanceof ApiError && error.failure.kind === "error" && error.failure.code === "network";
+  return isNetwork ? apiErrorMessage("network") : "Une erreur est survenue.";
 }
 
 // Accueil (basic) + F4 subset: operations of a budget month, newest first (docs/app-flow.md).

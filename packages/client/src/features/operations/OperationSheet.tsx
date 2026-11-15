@@ -51,15 +51,8 @@ export function OperationSheet({ operation, reference, settings, onClose, onSave
   );
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([]);
   const [failure, setFailure] = useState<ApiFailure | null>(null);
+  const [initialForm] = useState(form);
   const [confirmDelete, setConfirmDelete] = useState(false);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
 
   const category = reference.categories.find((c) => c.id === form.categoryId);
   // docs/decisions.md P1.5: the class cannot change on edit, so only same-class categories are offered.
@@ -116,6 +109,24 @@ export function OperationSheet({ operation, reference, settings, onClose, onSave
   });
 
   const pending = save.isPending || remove.isPending;
+  const pristine = (Object.keys(initialForm) as (keyof OperationFormState)[]).every((key) => form[key] === initialForm[key]);
+
+  // No close while a request is pending: a reopened form could send the same operation twice.
+  const close = () => {
+    if (!pending) onClose();
+  };
+  // A stray tap outside the sheet must not discard what was typed.
+  const closeFromOverlay = () => {
+    if (pristine) close();
+  };
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !pending) onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, pending]);
   const update = (patch: Partial<OperationFormState>) => setForm((current) => ({ ...current, ...patch }));
 
   const submit = (event: FormEvent) => {
@@ -163,7 +174,7 @@ export function OperationSheet({ operation, reference, settings, onClose, onSave
   );
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} onClick={closeFromOverlay}>
       <form
         className={styles.sheet}
         role="dialog"
@@ -177,7 +188,7 @@ export function OperationSheet({ operation, reference, settings, onClose, onSave
           <h2 id="sheet-title" className={styles.title}>
             {isEdit ? "Modifier l'opération" : "Nouvelle opération"}
           </h2>
-          <button type="button" className={styles.button} onClick={onClose}>
+          <button type="button" className={styles.button} onClick={close} disabled={pending}>
             Fermer
           </button>
         </div>

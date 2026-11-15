@@ -68,6 +68,8 @@ Known non-blocking notes:
 - P1.7: give the pot category a stable key instead of matching the name "Chargement du pot".
 - Later slice: custom amount keypad (design brief §7) replaced by a numeric input in P1.6 (P1.6 Q6).
 - Later slice: F1.4 restore of an open form after sign-in not done in P1.6 (P1.6 Q8).
+- Later slice: the month list asks for `limit=500` without paging; a month with more operations is cut without notice (P1.6 review).
+- P1.6 review: pot banner wording "Les budgets du pot de {mois} (…)" accepted (adds "de {mois}" to the plan text).
 - P1.10: iPhone checks over `tailscale serve` (APP_ORIGIN = ts.net origin), deferred from P1.6 (Q10).
 - P1.5 closed with the manual end-to-end check deferred to P1.6 (Fred, 2026-10-08): run the carry-over below during P1.6 QA.
 
