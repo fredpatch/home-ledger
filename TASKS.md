@@ -8,11 +8,11 @@
 ```text
 Branch            phase-1
 Iteration         Phase 1 — Socle
-Active slice      P1.6
-Workflow state    IN_PROGRESS
-Approved plan     docs/plans/P1.6.md (approved 2026-10-08)
-Last validated    P1.5 — 2026-10-08 (commit bfc4703; manual E2E deferred to P1.6)
-Next action       Implementer: shared helper + GET /api/reference first, stop for review; then client
+Active slice      P1.7
+Workflow state    PLANNING
+Approved plan     none yet (docs/plans/P1.7.md to write)
+Last validated    P1.6 — 2026-11-15 (commits 3e1e21c, 48327c2; Gate 2 by Fred)
+Next action       Planner: P1.7 plan (desktop journal + current-month budget view), then Gate 1
 ```
 
 ## Phase 1 slices
@@ -24,8 +24,8 @@ Next action       Implementer: shared helper + GET /api/reference first, stop fo
 | P1.3  | DB schema + first migration: comptes, categories, enveloppes, budgets, operations, projets, prets, pointages, parametres, journal_modifs; reference seed (6 accounts, categories with class and envelope source, Oct 2026 budgets, parameters) | P1.2       | CLOSED — Fred validated 2026-10-08 (d68ebc4)    |
 | P1.4  | Auth: single account, argon2id, DB session, HttpOnly cookie, CSRF, login rate limit                                                                                                                                                            | P1.3       | CLOSED — Fred validated 2026-10-08 (73a6e5e)    |
 | P1.5  | Operations API: create / edit / soft delete / list + filters, transfers, closed-month guard, journal_modifs                                                                                                                                    | P1.3, P1.4 | CLOSED — Fred validated 2026-10-08 (bfc4703)    |
-| P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | IN_PROGRESS                                     |
-| P1.7  | Desktop journal (filters, inline edit) + current-month budget view by envelope                                                                                                                                                                 | P1.5, P1.6 | —                                               |
+| P1.6  | Client shell (PWA, French UI, login) + mobile quick entry (R2 derivation shown before save)                                                                                                                                                    | P1.5       | CLOSED — Fred validated 2026-11-15 (48327c2)    |
+| P1.7  | Desktop journal (filters, inline edit) + current-month budget view by envelope                                                                                                                                                                 | P1.5, P1.6 | PLANNING                                        |
 | P1.8  | Accounts + reconciliation (pointage): theoretical vs real balance, gap, adjustment operation, cash tolerance (R12)                                                                                                                             | P1.5       | —                                               |
 | P1.9  | Import Excel v9.3 with preview: mapping + corrections from `docs/spec.md §Migration`, opening balances at 2026-10-01                                                                                                                           | P1.5, P1.8 | —                                               |
 | P1.10 | Ops: nightly backup + restore script, Docker Compose, `tailscale serve` runbook, deployment on homelab                                                                                                                                         | P1.4–P1.9  | —                                               |
@@ -102,13 +102,13 @@ node -e "const D=require('better-sqlite3');const d=new D(process.env.DATABASE_PA
 
 ```text
 Branch            phase-1
-Slice             P1.6
-Workflow state    IN_PROGRESS
-Approved goal     Phase 1 — Socle (docs/spec.md §Phases); P1.6 plan = docs/plans/P1.6.md
-✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4); P1.4 single-account auth (73a6e5e); P1.5 operations and settings API (bfc4703)
-⏳ Pending        P1.6 implementation; P1.5 manual E2E (carry-over); push phase-1 (Fred)
-Validation done   P1.5: typecheck/build/db:check green; npm test 71/71; test:integration 57/57 (agent-run); review passed with notes (findings resolved); QA passed with limitations; Fred validated Gate 2
-Not validated     P1.5 manual E2E against dev:api (deferred to P1.6)
+Slice             P1.7
+Workflow state    PLANNING
+Approved goal     Phase 1 — Socle (docs/spec.md §Phases); P1.7 plan not written yet
+✅ Done           P1.1 scaffold (43fd22c); P1.2 shared domain (73cbb86); P1.3 DB schema, migrations (incl. triggers), reference seed (d68ebc4); P1.4 single-account auth (73a6e5e); P1.5 operations and settings API (bfc4703); P1.6 minimal client and reference API (3e1e21c, fixes 48327c2)
+⏳ Pending        P1.7 plan
+Validation done   P1.6: typecheck/build green; npm test 92/92; test:integration 63/63 (agent-run); server and client reviews passed (4 client findings fixed in 48327c2); Fred validated Gate 2 on 2026-11-15
+Not validated     —
 Risks/blockers    none
-Next action       Implementer: P1.6 server part, then review, then client
+Next action       Planner: P1.7 plan, then Gate 1
 ```

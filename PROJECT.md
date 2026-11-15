@@ -184,3 +184,4 @@ Validates   functional acceptance locally (commands, browser on PC and phone, SQ
 - PWA push on iPhone works only when the app is installed on the home screen; payloads stay generic (no amounts).
 - The session cookie is `__Host-sid` (Secure). Safari rejects Secure cookies on `http://localhost`: develop with Chrome/Edge on the PC; phone tests go through `tailscale serve` (HTTPS). curl does not send Secure cookies over `http://localhost` either: pass `-H "Cookie: __Host-sid=<value>"` explicitly.
 - `npm run auth:set-password` needs a real TTY: run it in PowerShell or the VS Code terminal, not Git Bash/mintty (no TTY there, the command refuses).
+- Open the dev UI at http://localhost:5173 only; 127.0.0.1 fails the exact Origin check (APP_ORIGIN).
